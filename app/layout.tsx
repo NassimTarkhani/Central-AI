@@ -6,9 +6,9 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "AI Agents Central Command",
+  title: "Agent IA Centralisé",
   description: "Communicate with multiple AI agents through a single interface",
-    generator: 'v0.dev'
+    generator: 'Nassim Tarkhani , BEN8N'
 }
 
 export default function RootLayout({

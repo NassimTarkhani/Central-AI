@@ -71,18 +71,18 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   const navItems = [
     {
-      name: "Chat",
+      name: "Conversation",
       href: "/",
       icon: <MessageSquare className="h-5 w-5" />,
     },
     {
-      name: "Agent Config",
+      name: "Configuration",
       href: "/config",
       icon: <Settings className="h-5 w-5" />,
     },
     {
       name: "Profile",
-      href: "/profile",
+      href: "/",
       icon: <User className="h-5 w-5" />,
     },
   ]
@@ -91,14 +91,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
     <div className="flex min-h-screen bg-white dark:bg-gray-950">
       {/* Sidebar for desktop */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r bg-white transition-all dark:border-gray-800 dark:bg-gray-900 md:flex ${
-          isSidebarOpen ? "translate-x-0" : ""
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r bg-white transition-all dark:border-gray-800 dark:bg-gray-900 md:flex ${isSidebarOpen ? "translate-x-0" : ""
+          }`}
       >
         <div className="flex h-16 items-center border-b px-6 dark:border-gray-800">
           <Link href="/" className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
-            <span className="font-bold">AI Agents Central</span>
           </Link>
         </div>
         <nav className="flex-1 space-y-1 p-4">
@@ -106,11 +104,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
-                pathname === item.href
-                  ? "bg-gradient-to-r from-blue-500/10 to-green-500/10 text-blue-600 dark:text-blue-400"
-                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-              }`}
+              className={`flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors ${pathname === item.href
+                ? "bg-gradient-to-r from-blue-500/10 to-green-500/10 text-blue-600 dark:text-blue-400"
+                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                }`}
             >
               {item.icon}
               <span className="ml-3">{item.name}</span>
@@ -170,11 +167,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
-                    pathname === item.href
-                      ? "bg-gradient-to-r from-blue-500/10 to-green-500/10 text-blue-600 dark:text-blue-400"
-                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  }`}
+                  className={`flex items-center rounded-lg px-4 py-3 text-sm font-medium transition-colors ${pathname === item.href
+                    ? "bg-gradient-to-r from-blue-500/10 to-green-500/10 text-blue-600 dark:text-blue-400"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   {item.icon}
@@ -210,7 +206,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           </Button>
           <Link href="/" className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
-            <span className="font-bold">AI Agents Central</span>
+            <span className="font-bold"></span>
           </Link>
         </header>
 
@@ -225,9 +221,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-1 flex-col items-center justify-center py-2 text-xs ${
-                pathname === item.href ? "text-blue-600 dark:text-blue-400" : "text-gray-700 dark:text-gray-300"
-              }`}
+              className={`flex flex-1 flex-col items-center justify-center py-2 text-xs ${pathname === item.href ? "text-blue-600 dark:text-blue-400" : "text-gray-700 dark:text-gray-300"
+                }`}
             >
               {item.icon}
               <span className="mt-1">{item.name}</span>

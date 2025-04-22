@@ -349,7 +349,7 @@ export default function ChatInterface() {
     <ModernLayout showConversations={true}>
       <div className="flex h-[calc(100vh-64px)] flex-col">
         <div className="flex items-center justify-between border-b border-gray-800 bg-gray-900 p-4">
-          <h1 className="text-xl font-bold text-white">Chat with AI Agents</h1>
+          <h1 className="text-xl font-bold text-white">Agent IA Centralisé</h1>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={startNewConversation} disabled={isCreatingConversation}>
               {isCreatingConversation ? (
@@ -357,7 +357,7 @@ export default function ChatInterface() {
               ) : (
                 <Plus className="mr-1 h-4 w-4" />
               )}
-              <span className="hidden sm:inline">New Chat</span>
+              <span className="hidden sm:inline">Nouveau conversation</span>
             </Button>
             <Select value={selectedAgentId} onValueChange={setSelectedAgentId}>
               <SelectTrigger className="w-[180px] max-w-[120px] bg-gradient-to-r from-blue-500/10 to-green-500/10 sm:max-w-[180px]">
@@ -378,16 +378,16 @@ export default function ChatInterface() {
           {isLoadingConversations && localMessages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-              <p className="mt-4 text-gray-400">Loading messages...</p>
+              <p className="mt-4 text-gray-400">Chargement de messages...</p>
             </div>
           ) : localMessages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center">
               <div className="rounded-full bg-blue-500/10 p-4">
                 <Bot className="h-8 w-8 text-blue-500" />
               </div>
-              <h2 className="mt-4 text-xl font-bold text-white">Start a new conversation</h2>
+              <h2 className="mt-4 text-xl font-bold text-white">Démarrer une nouvelle conversation</h2>
               <p className="mt-2 text-center text-gray-400">
-                Select an agent and start typing to begin your conversation.
+                Veuillez choisir un agent et démarrer la conversation
               </p>
             </div>
           ) : (
@@ -460,7 +460,7 @@ export default function ChatInterface() {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <span>Send message</span>
+                  <span>Envoyer</span>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

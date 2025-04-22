@@ -14,6 +14,7 @@ import { useConversations } from "@/hooks/use-conversations"
 import Logo from "@/components/logo"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import Image from "next/image"
 
 interface ModernLayoutProps {
   children: React.ReactNode
@@ -71,18 +72,18 @@ export default function ModernLayout({ children, showConversations = false }: Mo
 
   const navItems = [
     {
-      name: "Chat",
+      name: "Conversations",
       href: "/",
       icon: <MessageSquare className="h-5 w-5" />,
     },
     {
-      name: "Agent Config",
+      name: "Configuration",
       href: "/config",
       icon: <Settings className="h-5 w-5" />,
     },
     {
       name: "Profile",
-      href: "/profile",
+      href: "/e",
       icon: <User className="h-5 w-5" />,
     },
   ]
@@ -126,8 +127,12 @@ export default function ModernLayout({ children, showConversations = false }: Mo
             </Button>
           )}
           <Link href="/" className="flex items-center gap-2">
-            <Logo className="h-8 w-8" />
-            <span className="font-bold text-white">AI Agents Central</span>
+            <Image
+              src="/white.png"
+              width={125}
+              height={82}
+              alt=""
+            />
           </Link>
         </div>
 
@@ -136,9 +141,8 @@ export default function ModernLayout({ children, showConversations = false }: Mo
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                pathname === item.href ? "bg-blue-500/20 text-blue-400" : "text-gray-300 hover:bg-gray-800"
-              }`}
+              className={`flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${pathname === item.href ? "bg-blue-500/20 text-blue-400" : "text-gray-300 hover:bg-gray-800"
+                }`}
             >
               {item.icon}
               <span>{item.name}</span>
@@ -147,13 +151,13 @@ export default function ModernLayout({ children, showConversations = false }: Mo
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-green-500 text-white">
+          <div className="flex items-center gap-2 hid">
+            <div className="  flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-green-500 text-white">
               {profile?.username?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "G"}
             </div>
-            <div className="hidden flex-col sm:flex">
-              <span className="text-sm font-medium text-white">{profile?.username || "Guest User"}</span>
-              <span className="text-xs text-gray-400">{user?.email || "guest@example.com"}</span>
+            <div className="hidden flex-col sm:flex ">
+              <span className="text-sm font-medium text-white hidden ">{profile?.username || "Guest User"}</span>
+              <span className="text-xs text-gray-400 hidden ">{user?.email || "guest@example.com"}</span>
             </div>
           </div>
         </div>
@@ -259,14 +263,14 @@ export default function ModernLayout({ children, showConversations = false }: Mo
                               variant="ghost"
                               size="icon"
                               className={cn(
-                                "absolute right-2 top-1/2 -translate-y-1/2 opacity-0 transition-opacity",
+                                "absolute right-6 top-1/3 pb-1 -translate-y-1/2 opacity-0 transition-opacity",
                                 "group-hover:opacity-100",
                                 !sidebarOpen && "md:opacity-100 md:right-1",
                                 pathname === `/?conversation=${conv.id}` && "opacity-100",
                               )}
                               onClick={(e) => handleDeleteConversation(e, conv.id)}
                             >
-                              <Trash2 className="h-4 w-4 text-gray-400 hover:text-red-400" />
+                              <Trash2 className="h-3 w-3 m  text-gray-400 hover:text-red-400" />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent side="right">
@@ -291,9 +295,9 @@ export default function ModernLayout({ children, showConversations = false }: Mo
                     {profile?.username?.charAt(0)?.toUpperCase() || "G"}
                   </div>
                   {sidebarOpen && (
-                    <div className="flex-1 truncate">
-                      <p className="text-sm font-medium truncate text-white">{profile?.username || "Guest User"}</p>
-                      <p className="text-xs text-gray-400 truncate">{user?.email || "guest@example.com"}</p>
+                    <div className="flex-1 truncate hidden">
+                      <p className="text-sm font-medium truncate text-white hidden">{profile?.username || "Guest User"}</p>
+                      <p className="text-xs text-gray-400 truncate hidden">{user?.email || "guest@example.com"}</p>
                     </div>
                   )}
                 </div>
@@ -324,9 +328,8 @@ export default function ModernLayout({ children, showConversations = false }: Mo
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-1 flex-col items-center justify-center py-2 text-xs ${
-                pathname === item.href ? "text-blue-400" : "text-gray-400"
-              }`}
+              className={`flex flex-1 flex-col items-center justify-center py-2 text-xs ${pathname === item.href ? "text-blue-400" : "text-gray-400"
+                }`}
             >
               {item.icon}
               <span className="mt-1">{item.name}</span>

@@ -38,7 +38,7 @@ const agentFormSchema = z.object({
     message: "Please enter a valid URL.",
   }),
   response_format: z.enum(["text", "html", "markdown"]),
-  status: z.enum(["active", "inactive"]),
+  status: z.enum(["Actif", "inactif"]),
   configuration: z.record(z.any()).optional(),
 })
 
@@ -58,7 +58,7 @@ export default function AgentConfiguration() {
       description: "",
       webhook_url: "",
       response_format: "text",
-      status: "active",
+      status: "actif",
       configuration: {},
     },
   })
@@ -140,9 +140,8 @@ export default function AgentConfiguration() {
 
       setTestResult({
         success: true,
-        message: `Test successful! Response: ${responseText.substring(0, 100)}${
-          responseText.length > 100 ? "..." : ""
-        }`,
+        message: `Test successful! Response: ${responseText.substring(0, 100)}${responseText.length > 100 ? "..." : ""
+          }`,
       })
     } catch (error) {
       console.error("Error testing agent:", error)
@@ -159,31 +158,31 @@ export default function AgentConfiguration() {
     <ModernLayout>
       <div className="container mx-auto py-6">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white">Agent Configuration</h1>
+          <h1 className="text-2xl font-bold text-white">Configuration D'agents</h1>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button
                 onClick={() => setEditingAgent(null)}
                 className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
               >
-                <Plus className="mr-2 h-4 w-4" /> Add New Agent
+                <Plus className="mr-2 h-4 w-4" /> Ajouter Nouveau Agent
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] bg-gray-900 text-white border-gray-800">
               <DialogHeader>
                 <DialogTitle>{editingAgent ? "Edit Agent" : "Create New Agent"}</DialogTitle>
                 <DialogDescription className="text-gray-400">
-                  Configure your AI agent to connect with external services.
+                  Configurer votre agent IA
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-0.25">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Agent Name</FormLabel>
+                        <FormLabel>Nom d'agent</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="e.g., SEO Content Agent"
@@ -211,7 +210,7 @@ export default function AgentConfiguration() {
                           />
                         </FormControl>
                         <FormDescription className="text-gray-400">
-                          A brief description of the agent's purpose and capabilities.
+                          Décrivez votre agent
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -232,7 +231,7 @@ export default function AgentConfiguration() {
                           />
                         </FormControl>
                         <FormDescription className="text-gray-400">
-                          The URL where agent requests will be sent.
+                          l'URL ou l'agent envoi son demande.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -244,7 +243,7 @@ export default function AgentConfiguration() {
                     name="response_format"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Response Format</FormLabel>
+                        <FormLabel>Format de Réponse</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger className="bg-gray-800 border-gray-700">
@@ -258,7 +257,7 @@ export default function AgentConfiguration() {
                           </SelectContent>
                         </Select>
                         <FormDescription className="text-gray-400">
-                          The format in which the agent will return responses.
+                          le format que l'agent envoi.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -271,8 +270,8 @@ export default function AgentConfiguration() {
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-700 p-4">
                         <div className="space-y-0.5">
-                          <FormLabel className="text-base">Active Status</FormLabel>
-                          <FormDescription className="text-gray-400">Enable or disable this agent.</FormDescription>
+                          <FormLabel className="text-base">Active</FormLabel>
+                          <FormDescription className="text-gray-400">Activer ou désactiver l'agent.</FormDescription>
                         </div>
                         <FormControl>
                           <Switch
@@ -298,15 +297,14 @@ export default function AgentConfiguration() {
                           Testing...
                         </>
                       ) : (
-                        "Test Webhook"
+                        "Tester Webhook"
                       )}
                     </Button>
 
                     {testResult && (
                       <div
-                        className={`mt-2 rounded-md p-2 text-sm ${
-                          testResult.success ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"
-                        }`}
+                        className={`mt-2 rounded-md p-2 text-sm ${testResult.success ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"
+                          }`}
                       >
                         {testResult.message}
                       </div>
@@ -324,13 +322,13 @@ export default function AgentConfiguration() {
                       }}
                       className="bg-gray-800 border-gray-700 hover:bg-gray-700"
                     >
-                      Cancel
+                      Annuler
                     </Button>
                     <Button
                       type="submit"
                       className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
                     >
-                      {editingAgent ? "Update Agent" : "Create Agent"}
+                      {editingAgent ? "Mettre à jour Agent" : "Créer Agent"}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -351,9 +349,9 @@ export default function AgentConfiguration() {
           ) : agents.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-700 p-12 text-center">
               <Server className="mb-4 h-12 w-12 text-gray-500" />
-              <h3 className="mb-2 text-lg font-medium text-white">No Agents Configured</h3>
+              <h3 className="mb-2 text-lg font-medium text-white">Pas d'Agents Configurer</h3>
               <p className="mb-4 text-sm text-gray-400">
-                You haven't created any AI agents yet. Get started by adding your first agent.
+                Vous n'avez pas créer des agents IA. Commençons par créer votre premier agentt.
               </p>
               <Button
                 onClick={() => {
@@ -362,7 +360,7 @@ export default function AgentConfiguration() {
                 }}
                 className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
               >
-                <Plus className="mr-2 h-4 w-4" /> Add New Agent
+                <Plus className="mr-2 h-4 w-4" /> Ajouter Agent
               </Button>
             </div>
           ) : (
@@ -404,9 +402,8 @@ export default function AgentConfiguration() {
                     </CardTitle>
                     <div className="mt-1 flex items-center">
                       <span
-                        className={`mr-2 inline-flex h-2 w-2 rounded-full ${
-                          agent.status === "active" ? "bg-green-500" : "bg-gray-400"
-                        }`}
+                        className={`mr-2 inline-flex h-2 w-2 rounded-full ${agent.status === "active" ? "bg-green-500" : "bg-gray-400"
+                          }`}
                       ></span>
                       <CardDescription className="text-gray-400">
                         {agent.status === "active" ? "Active" : "Inactive"}
@@ -425,16 +422,16 @@ export default function AgentConfiguration() {
                         </span>
                       </div>
                       <div className="mt-1 flex items-center justify-between">
-                        <span>Created:</span>
+                        <span>Créer:</span>
                         <span className="font-medium">
                           {agent.created_at ? new Date(agent.created_at).toLocaleDateString() : "Unknown"}
                         </span>
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t border-gray-800 bg-gray-800">
-                    <div className="flex w-full items-center justify-between text-xs">
-                      <span className="text-gray-400">Webhook URL:</span>
+                  <CardFooter className="border-t border-gray-800 bg-gray-800 pb-1">
+                    <div className="flex w-full items-center justify-between text-xs ">
+                      <span className="text-gray-400 py-2">Webhook URL:</span>
                       <span className="max-w-[180px] truncate font-mono text-gray-300">{agent.webhook_url}</span>
                     </div>
                   </CardFooter>

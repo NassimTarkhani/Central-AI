@@ -323,7 +323,7 @@ export default function ProfileManagement() {
                   disabled={isLoading}
                   className="ml-auto bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
                 >
-                  Save Preferences
+                  Enregistrer
                 </Button>
               </CardFooter>
             </Card>
