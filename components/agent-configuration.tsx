@@ -38,7 +38,7 @@ const agentFormSchema = z.object({
     message: "Please enter a valid URL.",
   }),
   response_format: z.enum(["text", "html", "markdown"]),
-  status: z.enum(["Actif", "inactif"]),
+  status: z.enum(["active", "inactive"]),
   configuration: z.record(z.any()).optional(),
 })
 
@@ -58,7 +58,7 @@ export default function AgentConfiguration() {
       description: "",
       webhook_url: "",
       response_format: "text",
-      status: "actif",
+      status: "active",
       configuration: {},
     },
   })
@@ -429,9 +429,9 @@ export default function AgentConfiguration() {
                       </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t border-gray-800 bg-gray-800 pb-1">
-                    <div className="flex w-full items-center justify-between text-xs ">
-                      <span className="text-gray-400 py-2">Webhook URL:</span>
+                  <CardFooter className="border-t border-gray-800 bg-gray-800">
+                    <div className="flex w-full items-center justify-between text-xs">
+                      <span className="text-gray-400">Webhook URL:</span>
                       <span className="max-w-[180px] truncate font-mono text-gray-300">{agent.webhook_url}</span>
                     </div>
                   </CardFooter>
