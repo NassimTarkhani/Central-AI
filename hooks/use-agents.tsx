@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/client"
 import { useToast } from "@/hooks/use-toast"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { v4 as uuidv4 } from "uuid"
 import type { Agent } from "@/lib/types"
 
-// Default agents to use as fallback - now with proper UUIDs
+// Default agents to use as fallback
 const defaultAgents: Agent[] = [
   {
-    id: "550e8400-e29b-41d4-a716-446655440000", // UUID for SEO agent
+    id: "550e8400-e29b-41d4-a716-446655440000",
     name: "SEO Content Agent",
     description: "Generates SEO-optimized content for websites and blogs",
     webhook_url: "https://n8n.srv780482.hstgr.cloud/webhook/ce5c6672-28d9-4971-b269-2d78bee7d48c",
@@ -19,7 +19,7 @@ const defaultAgents: Agent[] = [
     created_at: new Date().toISOString(),
   },
   {
-    id: "550e8400-e29b-41d4-a716-446655440001", // UUID for LinkedIn agent
+    id: "550e8400-e29b-41d4-a716-446655440001",
     name: "LinkedIn Post Agent",
     description: "Creates engaging LinkedIn posts for professional networking",
     webhook_url: "https://n8n.srv780482.hstgr.cloud/webhook-test/ce5c6672-28d9-4971-b269-2d78bee7d48c",
@@ -28,7 +28,7 @@ const defaultAgents: Agent[] = [
     created_at: new Date().toISOString(),
   },
   {
-    id: "550e8400-e29b-41d4-a716-446655440002", // UUID for Spatial agent
+    id: "550e8400-e29b-41d4-a716-446655440002",
     name: "Spatial Room Agent",
     description: "Manages spatial room configurations and settings",
     webhook_url: "https://n8n.srv780482.hstgr.cloud/webhook/ce5c6672-28d9-4971-b269-2d78bee7d48c",
@@ -42,7 +42,7 @@ export function useAgents() {
   const [agents, setAgents] = useLocalStorage<Agent[]>("agents", defaultAgents)
   const [isLoading, setIsLoading] = useState(true)
   const [dbAvailable, setDbAvailable] = useState(false)
-  const [dbChecked, setDbChecked] = useState(false) // Track if we've checked the DB
+  const [dbChecked, setDbChecked] = useState(false)
 
   const supabase = createClient()
   const { toast } = useToast()
@@ -51,78 +51,62 @@ export function useAgents() {
     try {
       setIsLoading(true)
 
-      // If we've already checked the DB and it's not available, use localStorage
-      if (dbChecked && !dbAvailable) {
-        return agents
-      }
+      if (dbChecked && !dbAvailable) return
 
-      // Try to fetch from Supabase
       const { data, error } = await supabase.from("agents").select("*").order("created_at", { ascending: false })
 
       if (error) {
-        // If there's an error, it might be because the table doesn't exist
         console.error("Error fetching agents:", error)
         setDbAvailable(false)
-        setDbChecked(true)
-        return agents // Return the current state (from localStorage)
-      }
-
-      // If we got data from Supabase, use it
-      if (data && data.length > 0) {
-        setDbAvailable(true)
-        setDbChecked(true)
+      } else if (data && data.length > 0) {
         setAgents(data)
-        return data
+        setDbAvailable(true)
       }
 
-      // If no data in Supabase but no error, use localStorage data
-      setDbAvailable(true)
       setDbChecked(true)
-      return agents
     } catch (error) {
       console.error("Error in fetchAgents:", error)
       setDbAvailable(false)
       setDbChecked(true)
-      return agents // Return the current state (from localStorage)
     } finally {
       setIsLoading(false)
     }
-  }, [supabase, agents, setAgents, dbChecked, dbAvailable])
+  }, [supabase, setAgents, dbChecked, dbAvailable])
 
   const createAgent = useCallback(
     async (agent: Omit<Agent, "id" | "created_at">) => {
       try {
-        const newAgent = {
-          id: uuidv4(),
-          ...agent,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+        // Insert agent without passing id or created_at, as Supabase handles that
+        const { data, error } = await supabase
+          .from("agents")
+          .insert([agent]) // wrap agent in an array
+          .select("*") // to get the full response with id and created_at
+
+        if (error) {
+          console.error("Error saving to Supabase:", error)
+          setDbAvailable(false)
+          toast({
+            title: "Error",
+            description: "Failed to create agent",
+            variant: "destructive",
+          })
+          return null
         }
 
-        // Try to save to Supabase if available
-        if (dbAvailable) {
-          try {
-            const { error } = await supabase.from("agents").insert(newAgent)
-            if (error) {
-              console.error("Error saving to Supabase:", error)
-              // Fall back to localStorage if Supabase fails
-              setDbAvailable(false)
-            }
-          } catch (error) {
-            console.error("Error saving to Supabase:", error)
-            setDbAvailable(false)
-          }
+        // Ensure we receive the full data from the insert query
+        if (data && data.length > 0) {
+          const insertedAgent = data[0] // The first agent in the response (should be the one we just inserted)
+          setAgents((prev) => [insertedAgent, ...prev]) // Update local storage state with the new agent
+
+          toast({
+            title: "Success",
+            description: "Agent created successfully",
+          })
+          return insertedAgent.id // Return the new agent's id
+        } else {
+          console.error("No data returned from Supabase insert")
+          return null
         }
-
-        // Always update local state
-        setAgents((prev) => [newAgent as Agent, ...prev])
-
-        toast({
-          title: "Success",
-          description: "Agent created successfully",
-        })
-
-        return newAgent.id
       } catch (error) {
         console.error("Error creating agent:", error)
         toast({
@@ -133,39 +117,30 @@ export function useAgents() {
         return null
       }
     },
-    [supabase, dbAvailable, setAgents, toast],
+    [supabase, dbAvailable, setAgents, toast]
   )
+
+
 
   const updateAgent = useCallback(
     async (id: string, updates: Partial<Agent>) => {
-      try {
-        const updatedAgent = {
-          ...updates,
-          updated_at: new Date().toISOString(),
-        }
+      const updatedAgent = {
+        ...updates,
+        updated_at: new Date().toISOString(),
+      }
 
-        // Try to update in Supabase if available
+      try {
         if (dbAvailable) {
-          try {
-            const { error } = await supabase.from("agents").update(updatedAgent).eq("id", id)
-            if (error) {
-              console.error("Error updating in Supabase:", error)
-              setDbAvailable(false)
-            }
-          } catch (error) {
+          const { error } = await supabase.from("agents").update(updatedAgent).eq("id", id)
+          if (error) {
             console.error("Error updating in Supabase:", error)
             setDbAvailable(false)
           }
         }
 
-        // Always update local state
         setAgents((prev) => prev.map((agent) => (agent.id === id ? { ...agent, ...updatedAgent } : agent)))
 
-        toast({
-          title: "Success",
-          description: "Agent updated successfully",
-        })
-
+        toast({ title: "Success", description: "Agent updated successfully" })
         return true
       } catch (error) {
         console.error("Error updating agent:", error)
@@ -183,28 +158,17 @@ export function useAgents() {
   const deleteAgent = useCallback(
     async (id: string) => {
       try {
-        // Try to delete from Supabase if available
         if (dbAvailable) {
-          try {
-            const { error } = await supabase.from("agents").delete().eq("id", id)
-            if (error) {
-              console.error("Error deleting from Supabase:", error)
-              setDbAvailable(false)
-            }
-          } catch (error) {
+          const { error } = await supabase.from("agents").delete().eq("id", id)
+          if (error) {
             console.error("Error deleting from Supabase:", error)
             setDbAvailable(false)
           }
         }
 
-        // Always update local state
         setAgents((prev) => prev.filter((agent) => agent.id !== id))
 
-        toast({
-          title: "Success",
-          description: "Agent deleted successfully",
-        })
-
+        toast({ title: "Success", description: "Agent deleted successfully" })
         return true
       } catch (error) {
         console.error("Error deleting agent:", error)
@@ -219,10 +183,9 @@ export function useAgents() {
     [supabase, dbAvailable, setAgents, toast],
   )
 
-  // Only fetch agents once on initial mount
   useEffect(() => {
-    fetchAgents()
-  }, []) // Empty dependency array to run only once
+    if (!dbChecked) fetchAgents()
+  }, [fetchAgents, dbChecked])
 
   return {
     agents,
@@ -231,5 +194,6 @@ export function useAgents() {
     createAgent,
     updateAgent,
     deleteAgent,
+    dbAvailable, // optional if you want to expose DB status
   }
 }

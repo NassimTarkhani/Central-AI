@@ -109,8 +109,31 @@ export default function AgentConfiguration() {
   }
 
   const handleDelete = async (agentId: string) => {
-    await deleteAgent(agentId)
+    const confirmed = confirm("Are you sure you want to delete this agent?")
+    if (!confirmed) return
+
+    try {
+      await deleteAgent(agentId)
+      toast({
+        title: "Agent deleted",
+        description: "The agent was successfully removed.",
+      })
+
+      // Reset form state if needed
+      if (editingAgent?.id === agentId) {
+        setEditingAgent(null)
+      }
+    } catch (error) {
+      console.error("Error deleting agent:", error)
+      toast({
+        title: "Failed to delete agent",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
+
+
 
   const testAgent = async () => {
     try {

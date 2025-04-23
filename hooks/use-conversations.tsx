@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect, useRef } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/client"
 import { useToast } from "@/hooks/use-toast"
 import { v4 as uuidv4 } from "uuid"
 import type { Conversation, Message } from "@/lib/types"
